@@ -1,0 +1,268 @@
+/* ── Customer layout (HB Propane inspired) ─────────────── */
+
+:root {
+  --hb-navy: #1a2a5a;
+  --hb-navy-dark: #0f1a3a;
+  --hb-navy-light: #2a4080;
+  --hb-sky: #5b8fd4;
+  --hb-orange: #e85d04;
+  --hb-cream: #f8f9fc;
+  --hb-text: #1e293b;
+  --hb-muted: #64748b;
+  --hb-white: #ffffff;
+  --hb-radius: 10px;
+  --hb-shadow: 0 8px 30px rgba(26, 42, 90, 0.12);
+}
+
+.cust-page {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--hb-cream);
+  color: var(--hb-text);
+}
+
+.cust-main {
+  flex: 1;
+}
+
+/* Header */
+.cust-header {
+  background: var(--hb-navy);
+  color: var(--hb-white);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.15);
+}
+
+.cust-header-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.cust-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.cust-logo-seal {
+  width: 44px;
+  height: 44px;
+  color: var(--hb-orange);
+  flex-shrink: 0;
+}
+
+.cust-logo-seal svg {
+  width: 100%;
+  height: 100%;
+}
+
+.cust-logo-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.2;
+}
+
+.cust-logo-text strong {
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.cust-logo-text small {
+  font-size: 0.7rem;
+  opacity: 0.75;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.cust-header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.cust-header-phone {
+  color: var(--hb-white);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: none;
+}
+
+@media (min-width: 640px) {
+  .cust-header-phone {
+    display: block;
+  }
+}
+
+/* Buttons */
+.cust-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--hb-radius);
+  font-size: 0.875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  text-decoration: none;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+}
+
+.cust-btn:active {
+  transform: scale(0.98);
+}
+
+.cust-btn--sm {
+  padding: 10px 18px;
+  font-size: 0.75rem;
+}
+
+.cust-btn--primary {
+  background: var(--hb-navy-dark);
+  color: var(--hb-white);
+  border-color: var(--hb-navy-dark);
+}
+
+.cust-btn--primary:hover {
+  background: var(--hb-navy-light);
+  border-color: var(--hb-navy-light);
+}
+
+.cust-btn--outline {
+  background: transparent;
+  color: var(--hb-navy);
+  border-color: var(--hb-navy);
+}
+
+.cust-btn--outline:hover {
+  background: var(--hb-navy);
+  color: var(--hb-white);
+}
+
+.cust-btn--white {
+  background: var(--hb-white);
+  color: var(--hb-navy);
+  border-color: var(--hb-white);
+}
+
+.cust-btn--white:hover {
+  background: var(--hb-cream);
+}
+
+.cust-btn--full {
+  width: 100%;
+}
+
+.cust-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Footer */
+.cust-footer {
+  background: var(--hb-navy);
+  color: rgba(255, 255, 255, 0.85);
+  margin-top: auto;
+}
+
+.cust-footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 20px 32px;
+  display: grid;
+  gap: 28px;
+}
+
+@media (min-width: 640px) {
+  .cust-footer-inner {
+    grid-template-columns: 1fr 1fr 1.5fr;
+    gap: 32px;
+  }
+}
+
+.cust-footer-brand strong {
+  display: block;
+  color: var(--hb-white);
+  font-size: 1.1rem;
+  margin-bottom: 8px;
+}
+
+.cust-footer-brand p {
+  margin: 0;
+  font-size: 0.875rem;
+  opacity: 0.8;
+}
+
+.cust-footer-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.cust-footer-contact a {
+  color: var(--hb-white);
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.9375rem;
+}
+
+.cust-footer-contact a:hover {
+  text-decoration: underline;
+}
+
+.cust-footer-label {
+  font-size: 0.6875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+  margin: 0 0 6px;
+}
+
+.cust-footer-areas p:last-child {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.cust-footer-bar {
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 0.75rem;
+  opacity: 0.7;
+}
+
+.cust-footer-bar p {
+  margin: 0;
+}
+
+.cust-footer-admin {
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: none;
+  font-size: 0.7rem;
+}
+
+.cust-footer-admin:hover {
+  color: var(--hb-white);
+}

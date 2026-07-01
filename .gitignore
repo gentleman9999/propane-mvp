@@ -1,0 +1,4 @@
+node_modules
+.env
+propane.db
+dist
