@@ -1,0 +1,128 @@
+.welcome-video {
+  padding: 56px 20px;
+  background: var(--hb-white);
+  border-bottom: 1px solid #e8ecf4;
+}
+
+.welcome-video-inner {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: grid;
+  gap: 32px;
+  align-items: center;
+}
+
+@media (min-width: 768px) {
+  .welcome-video-inner {
+    grid-template-columns: 1fr 1.2fr;
+    gap: 48px;
+  }
+}
+
+.welcome-video-copy .section-eyebrow {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--hb-sky);
+  margin: 0 0 8px;
+}
+
+.welcome-video-copy h2 {
+  margin: 0 0 12px;
+  font-size: clamp(1.375rem, 3vw, 1.75rem);
+  color: var(--hb-navy);
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+.welcome-video-sub {
+  margin: 0 0 24px;
+  color: var(--hb-muted);
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+.welcome-video-cta {
+  display: inline-flex;
+}
+
+.welcome-video-player {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 14px;
+  overflow: hidden;
+  box-shadow: var(--hb-shadow);
+  background: var(--hb-navy-dark);
+}
+
+.welcome-video-player iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+}
+
+.welcome-video-poster {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+}
+
+.welcome-video-poster-overlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 24px;
+  text-align: center;
+  background: linear-gradient(
+    160deg,
+    rgba(15, 26, 58, 0.75) 0%,
+    rgba(26, 42, 90, 0.85) 100%
+  );
+  color: var(--hb-white);
+}
+
+.welcome-video-play {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4px;
+}
+
+.welcome-video-play svg {
+  width: 28px;
+  height: 28px;
+  margin-left: 4px;
+}
+
+.welcome-video-poster-overlay p {
+  margin: 0;
+  font-size: 0.9375rem;
+  font-weight: 600;
+}
+
+.welcome-video-poster-overlay small {
+  font-size: 0.75rem;
+  opacity: 0.75;
+  line-height: 1.5;
+}
+
+.welcome-video-poster-overlay code {
+  font-size: 0.7rem;
+  background: rgba(255, 255, 255, 0.1);
+  padding: 2px 6px;
+  border-radius: 4px;
+}

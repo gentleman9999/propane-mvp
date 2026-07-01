@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { CustomerHeader, CustomerFooter } from "../components/CustomerLayout";
+import WelcomeVideo from "../components/WelcomeVideo";
 import { BRAND } from "../config/brand";
 import "./Landing.css";
 
@@ -84,6 +85,8 @@ export default function Landing() {
             ))}
           </div>
         </section>
+
+        <WelcomeVideo />
 
         <section className="about-band">
           <div className="about-card">

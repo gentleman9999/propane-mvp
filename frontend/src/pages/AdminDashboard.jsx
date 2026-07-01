@@ -227,6 +227,9 @@ export default function AdminDashboard() {
             <Link to="/" className="admin-home-link">
               Customer site
             </Link>
+            <Link to="/qr" className="admin-home-link">
+              QR code
+            </Link>
             <button
               type="button"
               className={`btn-icon${refreshing ? " spinning" : ""}`}
