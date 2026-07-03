@@ -8,7 +8,24 @@ const db = require("./database");
 
 const app = express();
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
+const path = require("path");
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:5173";
+
+function getAllowedOrigins() {
+  if (process.env.CORS_ALLOWED_ORIGINS) {
+    return process.env.CORS_ALLOWED_ORIGINS.split(",")
+      .map((url) => url.trim())
+      .filter(Boolean);
+  }
+
+  return [
+    ...FRONTEND_URL.split(",").map((url) => url.trim()),
+    "http://localhost:5173",
+    "http://localhost:4173",
+  ].filter(Boolean);
+}
+
+const ALLOWED_ORIGINS = [...new Set(getAllowedOrigins())];
 
 const PRODUCTS = {
   "20lb Propane Tank": 3500,
@@ -175,9 +192,19 @@ app.post(
   }
 );
 
-app.use(cors({
-  origin: process.env.FRONTEND_URL,
-}));
+app.use(
+  cors({
+    origin(origin, callback) {
+      // Server-to-server tools (curl, Postman) send no Origin header.
+      if (!origin || ALLOWED_ORIGINS.includes(origin)) {
+        callback(null, true);
+      } else {
+        console.warn(`CORS blocked origin: ${origin}`);
+        callback(new Error(`CORS not allowed for origin: ${origin}`));
+      }
+    },
+  })
+);
 app.use(express.json());
 
 app.get("/api/products", (_req, res) => {
@@ -337,6 +364,18 @@ app.patch("/api/orders/:id/delivered", (req, res) => {
   res.json({ success: true });
 });
 
+// Optional: serve built frontend from same host (no CORS needed).
+// Set SERVE_FRONTEND=true on Render and build frontend into ../frontend/dist
+if (process.env.SERVE_FRONTEND === "true") {
+  const distPath = path.join(__dirname, "../frontend/dist");
+  app.use(express.static(distPath));
+  app.get(/^(?!\/api).*/, (_req, res) => {
+    res.sendFile(path.join(distPath, "index.html"));
+  });
+}
+
 app.listen(process.env.PORT, () => {
   console.log(`Backend running on port ${process.env.PORT}`);
+  console.log(`FRONTEND_URL (Stripe redirects): ${FRONTEND_URL}`);
+  console.log(`CORS allowed origins: ${ALLOWED_ORIGINS.join(", ")}`);
 });

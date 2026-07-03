@@ -6,7 +6,7 @@ export const BRAND = {
   subtitle: "Safe, efficient, and reliable propane delivery — to your home, RV, or job site.",
   phone: "(805) 975-2281",
   phoneTel: "+18059752281",
-  email: "info@hbpropane.com",
+  email: "info@huntingtonbeachpropane.com",
   serviceAreas: [
     "Huntington Beach",
     "Newport Beach",
