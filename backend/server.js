@@ -306,7 +306,7 @@ app.post("/api/checkout", async (req, res) => {
 
 app.post("/api/orders", async (req, res) => {
   try {
-    const { firstName, phone, address, items, totalAmount } = req.body;
+    const { firstName, phone, address, items } = req.body;
 
     if (!firstName || !phone || !address || !items?.length) {
       return res.status(400).json({ error: "Missing required order fields" });
