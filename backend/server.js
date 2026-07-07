@@ -28,10 +28,10 @@ function getAllowedOrigins() {
 const ALLOWED_ORIGINS = [...new Set(getAllowedOrigins())];
 
 const PRODUCTS = {
-  "20lb Propane Tank": 3500,
-  "30lb Propane Tank": 4500,
-  "40lb Propane Tank": 5500,
-  "Patio Heater Tank": 6500,
+  "20lb Propane Tank": 2500,
+  "30lb Propane Tank": 3500,
+  "40lb Propane Tank": 4500,
+  "Forklift Tank": 4000,
 };
 
 const twilioClient = twilio(
@@ -68,29 +68,54 @@ function validateEnv() {
 
 validateEnv();
 
+function validateOrderItems(items) {
+  if (!Array.isArray(items) || items.length === 0) {
+    throw new Error("Add at least one item to your order");
+  }
+
+  const normalized = [];
+  let totalAmount = 0;
+
+  for (const item of items) {
+    const unitCents = PRODUCTS[item.product];
+    if (!unitCents) {
+      throw new Error(`Invalid product: ${item.product}`);
+    }
+
+    const quantity = Math.max(1, Math.floor(Number(item.quantity) || 0));
+    normalized.push({
+      product: item.product,
+      quantity,
+      price: unitCents / 100,
+    });
+    totalAmount += unitCents * quantity;
+  }
+
+  return { items: normalized, totalAmount };
+}
+
 async function createCheckoutSession({
   firstName,
   phone,
   items,
-  totalAmount,
   successUrl,
   cancelUrl,
 }) {
+  const { items: orderItems } = validateOrderItems(items);
+
   return stripe.checkout.sessions.create({
     mode: "payment",
     payment_method_types: ["card"],
     customer_email: undefined,
     phone_number_collection: { enabled: true },
-    line_items: [
-      {
-        price_data: {
-          currency: "usd",
-          product_data: { name: "Propane Delivery Order" },
-          unit_amount: totalAmount,
-        },
-        quantity: 1,
+    line_items: orderItems.map((item) => ({
+      price_data: {
+        currency: "usd",
+        product_data: { name: item.product },
+        unit_amount: Math.round(item.price * 100),
       },
-    ],
+      quantity: item.quantity,
+    })),
     success_url: successUrl,
     cancel_url: cancelUrl,
     metadata: { phone, firstName },
@@ -223,23 +248,16 @@ app.post("/api/checkout", async (req, res) => {
       firstName,
       phone,
       deliveryLocation,
-      product,
-      quantity = 1,
+      items,
       deliveryLat,
       deliveryLng,
     } = req.body;
 
-    if (!firstName || !phone || !deliveryLocation || !product) {
+    if (!firstName || !phone || !deliveryLocation) {
       return res.status(400).json({ error: "Missing required fields" });
     }
 
-    const unitPrice = PRODUCTS[product];
-    if (!unitPrice) {
-      return res.status(400).json({ error: "Invalid product" });
-    }
-
-    const qty = Math.max(1, Number(quantity) || 1);
-    const totalAmount = unitPrice * qty;
+    const { items: orderItems, totalAmount } = validateOrderItems(items);
     const customerPhone = normalizePhone(phone);
 
     let address = deliveryLocation.trim();
@@ -252,8 +270,7 @@ app.post("/api/checkout", async (req, res) => {
     const session = await createCheckoutSession({
       firstName,
       phone: customerPhone,
-      items: [{ product, quantity: qty, price: unitPrice / 100 }],
-      totalAmount,
+      items: orderItems,
       successUrl: `${FRONTEND_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${FRONTEND_URL}/order?canceled=1`,
     });
@@ -262,7 +279,7 @@ app.post("/api/checkout", async (req, res) => {
       firstName,
       phone: customerPhone,
       address,
-      items: [{ product, quantity: qty, price: unitPrice / 100 }],
+      items: orderItems,
       totalAmount,
       session,
       orderSource: "qr",
@@ -291,18 +308,19 @@ app.post("/api/orders", async (req, res) => {
   try {
     const { firstName, phone, address, items, totalAmount } = req.body;
 
-    if (!firstName || !phone || !address || !items?.length || !totalAmount) {
+    if (!firstName || !phone || !address || !items?.length) {
       return res.status(400).json({ error: "Missing required order fields" });
     }
 
     const customerPhone = normalizePhone(phone);
     console.log(`Creating phone order for ${firstName} (${customerPhone})...`);
 
+    const { items: orderItems, totalAmount } = validateOrderItems(items);
+
     const session = await createCheckoutSession({
       firstName,
       phone: customerPhone,
-      items,
-      totalAmount,
+      items: orderItems,
       successUrl: `${FRONTEND_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
       cancelUrl: `${FRONTEND_URL}/admin`,
     });
@@ -311,7 +329,7 @@ app.post("/api/orders", async (req, res) => {
       firstName,
       phone: customerPhone,
       address,
-      items,
+      items: orderItems,
       totalAmount,
       session,
       orderSource: "phone",

@@ -32,6 +32,25 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
+  flex: 1;
+}
+
+.brand-text {
+  min-width: 0;
+}
+
+.brand-text h1 {
+  margin: 0;
+  font-size: clamp(0.875rem, 2.5vw, 1.125rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+  color: var(--color-header-text);
+}
+
+.brand-title-short {
+  display: none;
 }
 
 .brand-icon {
@@ -51,15 +70,6 @@
   color: white;
 }
 
-.brand-text h1 {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  line-height: 1.2;
-  color: var(--color-header-text);
-}
-
 .brand-text p {
   margin: 0;
   font-size: 0.75rem;
@@ -71,6 +81,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
+  flex-shrink: 0;
 }
 
 .admin-home-link {
@@ -101,6 +112,7 @@
   color: var(--color-header-text);
   transition: background var(--transition);
   padding: 0;
+  flex-shrink: 0;
 }
 
 .btn-icon:hover:not(:disabled) {
@@ -348,6 +360,155 @@
 .btn-primary svg {
   width: 18px;
   height: 18px;
+}
+
+/* ── Admin product cart ─────────────────────────────────── */
+
+.admin-cart-hint {
+  margin: 0 0 14px;
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+  line-height: 1.45;
+}
+
+.admin-product-grid {
+  display: grid;
+  gap: 10px;
+}
+
+.admin-product-card {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 8px 16px;
+  padding: 12px 14px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.admin-product-card.selected {
+  border-color: var(--color-primary);
+  background: var(--color-primary-light);
+}
+
+.admin-product-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.admin-product-name {
+  font-weight: 600;
+  font-size: 0.875rem;
+  color: var(--color-text);
+}
+
+.admin-product-desc {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+}
+
+.admin-product-price {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-primary);
+  margin-top: 2px;
+}
+
+.admin-qty-controls {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  align-self: center;
+}
+
+.admin-qty-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  background: var(--color-surface);
+  color: var(--color-text);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background var(--transition), border-color var(--transition);
+}
+
+.admin-qty-btn:hover:not(:disabled) {
+  background: var(--color-bg);
+  border-color: var(--color-primary);
+}
+
+.admin-qty-btn:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.admin-qty-value {
+  min-width: 24px;
+  text-align: center;
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.admin-line-total {
+  grid-column: 1 / -1;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--color-text);
+  text-align: right;
+  padding-top: 4px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.admin-order-summary {
+  margin-top: 16px;
+  padding: 14px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.admin-order-summary-title {
+  margin: 0 0 8px;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-text-muted);
+}
+
+.admin-order-summary-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.admin-order-summary-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 5px 0;
+  font-size: 0.8125rem;
+  color: var(--color-text);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.admin-order-summary-list li:last-child {
+  border-bottom: none;
+}
+
+.admin-order-summary-list li span:last-child {
+  font-weight: 600;
+  white-space: nowrap;
 }
 
 /* ── Orders panel ───────────────────────────────────────── */
@@ -699,6 +860,10 @@
     padding: 16px 16px 32px;
   }
 
+  .header {
+    padding: 0 12px;
+  }
+
   .stats {
     grid-template-columns: 1fr;
     gap: 10px;
@@ -738,8 +903,27 @@
     display: none;
   }
 
+  .brand-title-long {
+    display: none;
+  }
+
+  .brand-title-short {
+    display: inline;
+  }
+
+  .brand-text h1 {
+    font-size: 0.9375rem;
+    white-space: nowrap;
+  }
+
   .header-inner {
     min-height: 56px;
+    gap: 8px;
+  }
+
+  .admin-home-link {
+    padding: 8px 10px;
+    font-size: 0.75rem;
   }
 }
 

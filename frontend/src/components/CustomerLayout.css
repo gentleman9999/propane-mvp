@@ -1,4 +1,4 @@
-/* ── Customer layout (HB Propane inspired) ─────────────── */
+/* ── Customer layout ───────────────────────────────────── */
 
 :root {
   --hb-navy: #1a2a5a;
@@ -70,12 +70,17 @@
   display: flex;
   flex-direction: column;
   line-height: 1.2;
+  min-width: 0;
+  max-width: min(220px, 55vw);
 }
 
 .cust-logo-text strong {
-  font-size: 1.05rem;
+  font-size: clamp(0.8rem, 2.8vw, 1.05rem);
   font-weight: 700;
   letter-spacing: -0.02em;
+  line-height: 1.15;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .cust-logo-text small {
@@ -198,8 +203,11 @@
 .cust-footer-brand strong {
   display: block;
   color: var(--hb-white);
-  font-size: 1.1rem;
+  font-size: clamp(0.9375rem, 2.5vw, 1.1rem);
   margin-bottom: 8px;
+  line-height: 1.25;
+  word-wrap: break-word;
+  overflow-wrap: anywhere;
 }
 
 .cust-footer-brand p {
@@ -237,6 +245,7 @@
   margin: 0;
   font-size: 0.8125rem;
   line-height: 1.6;
+  word-wrap: break-word;
 }
 
 .cust-footer-bar {

@@ -2,15 +2,14 @@ import { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { API_URL } from "../api";
+import { BRAND } from "../config/brand";
+import { PRODUCTS, emptyCart } from "../config/products";
 import "../App.css";
 
 const INITIAL_FORM = {
   firstName: "",
   phone: "",
   address: "",
-  product: "20lb Propane Tank",
-  quantity: 1,
-  price: 35,
 };
 
 function FlameIcon() {
@@ -91,13 +90,33 @@ function SourceBadge({ source }) {
 
 export default function AdminDashboard() {
   const [form, setForm] = useState(INITIAL_FORM);
+  const [cart, setCart] = useState(emptyCart);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(false);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [toast, setToast] = useState(null);
 
-  const totalAmount = Number(form.quantity) * Number(form.price);
+  const cartLines = useMemo(
+    () =>
+      PRODUCTS.filter((p) => cart[p.id] > 0).map((p) => ({
+        product: p.name,
+        quantity: cart[p.id],
+        price: p.price,
+        lineTotal: p.price * cart[p.id],
+      })),
+    [cart]
+  );
+
+  const totalAmount = useMemo(
+    () => cartLines.reduce((sum, line) => sum + line.lineTotal, 0),
+    [cartLines]
+  );
+
+  const itemCount = useMemo(
+    () => cartLines.reduce((sum, line) => sum + line.quantity, 0),
+    [cartLines]
+  );
 
   const stats = useMemo(
     () => ({
@@ -142,8 +161,19 @@ export default function AdminDashboard() {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
 
+  const setQuantity = (productId, nextQty) => {
+    const qty = Math.max(0, Math.min(99, nextQty));
+    setCart((prev) => ({ ...prev, [productId]: qty }));
+  };
+
   const createOrder = async (e) => {
     e.preventDefault();
+
+    if (cartLines.length === 0) {
+      showToast("Add at least one tank to the order.", "error");
+      return;
+    }
+
     setLoading(true);
 
     try {
@@ -151,14 +181,7 @@ export default function AdminDashboard() {
         firstName: form.firstName,
         phone: form.phone,
         address: form.address,
-        items: [
-          {
-            product: form.product,
-            quantity: Number(form.quantity),
-            price: Number(form.price),
-          },
-        ],
-        totalAmount: totalAmount * 100,
+        items: cartLines.map(({ product, quantity }) => ({ product, quantity })),
       };
 
       const res = await axios.post(`${API_URL}/orders`, payload);
@@ -174,6 +197,7 @@ export default function AdminDashboard() {
       }
 
       setForm(INITIAL_FORM);
+      setCart(emptyCart());
       loadOrders(true);
       console.log("Payment link:", res.data.paymentLink);
     } catch (err) {
@@ -219,16 +243,19 @@ export default function AdminDashboard() {
               <FlameIcon />
             </div>
             <div className="brand-text">
-              <h1>Propane Delivery</h1>
+              <h1>
+                <span className="brand-title-long">{BRAND.shortName}</span>
+                <span className="brand-title-short">Cylinder Exchange</span>
+              </h1>
               <p>Admin Dashboard</p>
             </div>
           </div>
           <div className="header-actions">
-            <Link to="/" className="admin-home-link">
-              Customer site
+            <Link to="/" className="admin-home-link" title="Customer site">
+              Site
             </Link>
-            <Link to="/qr" className="admin-home-link">
-              QR code
+            <Link to="/qr" className="admin-home-link" title="QR code">
+              QR
             </Link>
             <button
               type="button"
@@ -335,55 +362,86 @@ export default function AdminDashboard() {
 
               <div className="form-section">
                 <p className="form-section-title">Order Details</p>
-                <div className="field">
-                  <label htmlFor="product">Product</label>
-                  <select
-                    id="product"
-                    name="product"
-                    value={form.product}
-                    onChange={handleChange}
-                  >
-                    <option>20lb Propane Tank</option>
-                    <option>30lb Propane Tank</option>
-                    <option>40lb Propane Tank</option>
-                    <option>Patio Heater Tank</option>
-                  </select>
+                <p className="admin-cart-hint">
+                  Use + and − to add multiple tank sizes to one order.
+                </p>
+                <div className="admin-product-grid">
+                  {PRODUCTS.map((product) => {
+                    const qty = cart[product.id];
+                    const active = qty > 0;
+
+                    return (
+                      <div
+                        key={product.id}
+                        className={`admin-product-card${active ? " selected" : ""}`}
+                      >
+                        <div className="admin-product-info">
+                          <span className="admin-product-name">{product.name}</span>
+                          <span className="admin-product-desc">{product.description}</span>
+                          <span className="admin-product-price">${product.price} each</span>
+                        </div>
+                        <div className="admin-qty-controls">
+                          <button
+                            type="button"
+                            className="admin-qty-btn"
+                            onClick={() => setQuantity(product.id, qty - 1)}
+                            disabled={qty === 0}
+                            aria-label={`Decrease ${product.name}`}
+                          >
+                            −
+                          </button>
+                          <span className="admin-qty-value">{qty}</span>
+                          <button
+                            type="button"
+                            className="admin-qty-btn"
+                            onClick={() => setQuantity(product.id, qty + 1)}
+                            aria-label={`Increase ${product.name}`}
+                          >
+                            +
+                          </button>
+                        </div>
+                        {active && (
+                          <span className="admin-line-total">
+                            ${(product.price * qty).toFixed(2)}
+                          </span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-                <div className="field-row">
-                  <div className="field">
-                    <label htmlFor="quantity">Quantity</label>
-                    <input
-                      id="quantity"
-                      type="number"
-                      name="quantity"
-                      min="1"
-                      value={form.quantity}
-                      onChange={handleChange}
-                      required
-                    />
+
+                {cartLines.length > 0 && (
+                  <div className="admin-order-summary">
+                    <p className="admin-order-summary-title">Order summary</p>
+                    <ul className="admin-order-summary-list">
+                      {cartLines.map((line) => (
+                        <li key={line.product}>
+                          <span>
+                            {line.quantity} × {line.product}
+                          </span>
+                          <span>${line.lineTotal.toFixed(2)}</span>
+                        </li>
+                      ))}
+                    </ul>
                   </div>
-                  <div className="field">
-                    <label htmlFor="price">Price per Item ($)</label>
-                    <input
-                      id="price"
-                      type="number"
-                      name="price"
-                      min="1"
-                      step="0.01"
-                      value={form.price}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
-                </div>
+                )}
               </div>
 
               <div className="total-box">
-                <span>Order Total</span>
+                <span>
+                  Order Total
+                  {itemCount > 0
+                    ? ` (${itemCount} item${itemCount !== 1 ? "s" : ""})`
+                    : ""}
+                </span>
                 <strong>${totalAmount.toFixed(2)}</strong>
               </div>
 
-              <button type="submit" className="btn-primary" disabled={loading}>
+              <button
+                type="submit"
+                className="btn-primary"
+                disabled={loading || cartLines.length === 0}
+              >
                 {loading ? (
                   "Creating order…"
                 ) : (
