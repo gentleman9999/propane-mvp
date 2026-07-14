@@ -95,6 +95,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [ordersLoading, setOrdersLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [loadError, setLoadError] = useState(null);
   const [toast, setToast] = useState(null);
 
   const cartLines = useMemo(
@@ -144,8 +145,13 @@ export default function AdminDashboard() {
     try {
       const res = await axios.get(`${API_URL}/orders`);
       setOrders(res.data);
+      setLoadError(null);
     } catch (err) {
       console.error(err);
+      setLoadError(
+        err.response?.data?.error ||
+          "Could not reach the server. Check that the backend is running."
+      );
       if (!silent) showToast("Failed to load orders", "error");
     } finally {
       setOrdersLoading(false);
@@ -465,6 +471,19 @@ export default function AdminDashboard() {
               )}
             </div>
             <div className="card-body">
+              {loadError && !ordersLoading && (
+                <div className="admin-load-error">
+                  <strong>Could not load orders</strong>
+                  <p>{loadError}</p>
+                  <button
+                    type="button"
+                    className="btn-action"
+                    onClick={() => loadOrders()}
+                  >
+                    Retry
+                  </button>
+                </div>
+              )}
               {ordersLoading ? (
                 <div className="loading-state">
                   <div className="loading-spinner" aria-hidden="true" />

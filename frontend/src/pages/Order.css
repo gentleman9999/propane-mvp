@@ -323,3 +323,43 @@
   color: var(--hb-muted);
   line-height: 1.5;
 }
+
+/* SMS consent (A2P / Twilio) */
+.sms-consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: 0 0 14px;
+  padding: 14px;
+  background: #f8fafc;
+  border: 1px solid #e8ecf4;
+  border-radius: var(--hb-radius);
+  cursor: pointer;
+}
+
+.sms-consent input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--hb-navy);
+  cursor: pointer;
+}
+
+.sms-consent span {
+  font-size: 0.8125rem;
+  line-height: 1.55;
+  color: var(--hb-text);
+}
+
+.sms-disclosures {
+  margin: 0;
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--hb-muted);
+}
+
+.sms-disclosures a {
+  color: var(--hb-navy);
+  font-weight: 600;
+}

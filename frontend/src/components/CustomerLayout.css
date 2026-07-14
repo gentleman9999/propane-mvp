@@ -266,12 +266,25 @@
   margin: 0;
 }
 
-.cust-footer-admin {
-  color: rgba(255, 255, 255, 0.5);
-  text-decoration: none;
-  font-size: 0.7rem;
+.cust-footer-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 16px;
 }
 
-.cust-footer-admin:hover {
+.cust-footer-links a {
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.cust-footer-links a:hover {
   color: var(--hb-white);
+}
+
+.cust-footer-admin {
+  color: rgba(255, 255, 255, 0.45) !important;
+  font-weight: 500 !important;
 }

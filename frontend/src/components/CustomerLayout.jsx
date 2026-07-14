@@ -56,9 +56,13 @@ export function CustomerFooter() {
       </div>
       <div className="cust-footer-bar">
         <p>© {new Date().getFullYear()} {BRAND.name}. All rights reserved.</p>
-        <Link to="/admin" className="cust-footer-admin">
-          Staff login
-        </Link>
+        <div className="cust-footer-links">
+          <Link to="/privacy">Privacy</Link>
+          <Link to="/terms">Terms</Link>
+          <Link to="/admin" className="cust-footer-admin">
+            Staff login
+          </Link>
+        </div>
       </div>
     </footer>
   );

@@ -162,10 +162,10 @@ function handleCheckoutCompleted(session) {
     .prepare(
       `UPDATE orders
        SET status = 'paid'
-       WHERE (stripe_session_id = ? OR stripe_payment_link = ?)
+       WHERE stripe_session_id = ?
          AND status = 'pending'`
     )
-    .run(session.id, session.url);
+    .run(session.id);
 
   if (result.changes > 0) {
     console.log(`Order marked paid for Stripe session ${session.id}`);
@@ -173,10 +173,8 @@ function handleCheckoutCompleted(session) {
   }
 
   const existing = db
-    .prepare(
-      "SELECT id, status FROM orders WHERE stripe_session_id = ? OR stripe_payment_link = ?"
-    )
-    .get(session.id, session.url);
+    .prepare("SELECT id, status FROM orders WHERE stripe_session_id = ?")
+    .get(session.id);
 
   if (existing) {
     console.log(`Order ${existing.id} already ${existing.status}`);

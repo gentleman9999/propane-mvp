@@ -15,6 +15,7 @@ export default function Order() {
     phone: "",
     deliveryLocation: "",
   });
+  const [smsConsent, setSmsConsent] = useState(false);
   const [cart, setCart] = useState(emptyCart);
   const [coords, setCoords] = useState(null);
   const [locating, setLocating] = useState(false);
@@ -88,6 +89,11 @@ export default function Order() {
       return;
     }
 
+    if (!smsConsent) {
+      setError("Please check the box to agree to receive order text messages.");
+      return;
+    }
+
     setLoading(true);
     setError("");
 
@@ -99,6 +105,7 @@ export default function Order() {
         items: cartLines.map(({ product, quantity }) => ({ product, quantity })),
         deliveryLat: coords?.lat,
         deliveryLng: coords?.lng,
+        smsConsent: true,
       });
 
       window.location.href = res.data.checkoutUrl;
@@ -159,8 +166,35 @@ export default function Order() {
                   autoComplete="tel"
                   required
                 />
-                <span className="order-hint">We&apos;ll text you order updates.</span>
               </div>
+            </section>
+
+            <section className="order-section">
+              <h2>Text message updates</h2>
+              <label className="sms-consent">
+                <input
+                  type="checkbox"
+                  checked={smsConsent}
+                  onChange={(e) => {
+                    setSmsConsent(e.target.checked);
+                    setError("");
+                  }}
+                />
+                <span>
+                  Yes, I agree to receive automated text messages from The Cylinder
+                  Exchange about my order, payment link, and delivery updates.
+                  Message frequency varies. Message and data rates may apply. Reply
+                  HELP for help or STOP to cancel. Consent is not required as a
+                  condition of purchase — you may also call us to order.
+                </span>
+              </label>
+              <p className="sms-disclosures">
+                By continuing, you confirm you can receive texts at the number
+                provided.{" "}
+                <Link to="/privacy">Privacy Policy</Link>
+                {" · "}
+                <Link to="/terms">Terms of Service</Link>
+              </p>
             </section>
 
             <section className="order-section">
@@ -274,7 +308,7 @@ export default function Order() {
             <button
               type="submit"
               className="cust-btn cust-btn--primary cust-btn--full"
-              disabled={loading || cartLines.length === 0}
+              disabled={loading || cartLines.length === 0 || !smsConsent}
             >
               {loading ? "Redirecting to secure checkout…" : "Continue to Payment"}
             </button>

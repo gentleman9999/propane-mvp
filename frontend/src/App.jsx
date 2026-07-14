@@ -3,6 +3,8 @@ import Landing from "./pages/Landing";
 import Order from "./pages/Order";
 import OrderSuccess from "./pages/OrderSuccess";
 import QrCode from "./pages/QrCode";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 import AdminDashboard from "./pages/AdminDashboard";
 
 export default function App() {
@@ -12,6 +14,8 @@ export default function App() {
         <Route path="/" element={<Landing />} />
         <Route path="/order" element={<Order />} />
         <Route path="/order/success" element={<OrderSuccess />} />
+        <Route path="/privacy" element={<Privacy />} />
+        <Route path="/terms" element={<Terms />} />
         <Route path="/qr" element={<QrCode />} />
         <Route path="/admin" element={<AdminDashboard />} />
       </Routes>

@@ -673,6 +673,39 @@
   color: var(--color-success);
 }
 
+.admin-load-error {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #b91c1c;
+  padding: 14px 16px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  font-size: 0.875rem;
+}
+
+.admin-load-error strong {
+  display: block;
+  margin-bottom: 6px;
+  color: #991b1b;
+}
+
+.admin-load-error p {
+  margin: 0 0 12px;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+
+.admin-load-error .btn-action {
+  width: auto;
+  margin: 0;
+}
+
+.admin-load-error .btn-action:hover {
+  background: var(--color-surface);
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
 /* ── Order cards (mobile) ───────────────────────────────── */
 
 .order-cards {
